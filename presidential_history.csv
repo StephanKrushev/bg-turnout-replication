@@ -1,0 +1,17 @@
+year,round,voters,electorate,turnout_pct,source_printed_pct,basis,source_url
+1992,1,5139891,6817914,75.39,75.39,Presidency: voters and electorate,https://web.archive.org/web/20021115092621/http://www.president.bg/inst_izbori_92.php
+1992,2,5206226,6859318,75.90,75.9,Presidency: voters and electorate,https://web.archive.org/web/20021115092621/http://www.president.bg/inst_izbori_92.php
+1996,1,4317161,6837737,63.14,63.14,Presidency: voters and electorate,https://web.archive.org/web/20020618120305/http://www.president.bg/inst_izbori_96.php
+1996,2,4215145,6859318,61.45,61.67,Presidency: voters and electorate,https://web.archive.org/web/20020618120305/http://www.president.bg/inst_izbori_96.php
+2001,1,2850297,6847422,41.63,41.62,Presidency: voters and electorate,https://web.archive.org/web/20111110115131/http://www.president.bg/en/inst_izbori.php
+2001,2,3784036,6889638,54.92,54.92,Presidency: voters and electorate,https://web.archive.org/web/20111110115131/http://www.president.bg/en/inst_izbori.php
+2006,1,2856734,6477126,44.10,,CIK protocol: signatures / main and supplementary lists (rows 5 / (3+4)),https://pvr2006.cik.bg/results_1/index.html
+2006,2,2757441,6469224,42.62,,CIK protocol: signatures / main and supplementary lists (rows 5 / (3+4)),https://pvr2006.cik.bg/results_2/index.html
+2011,1,3593751,6896216,52.11,,CIK protocol: signatures / opening list plus both additions (rows 7 / (3+4+5)),https://results.cik.bg/mipvr2011/tur1/prezidentski/index.html
+2011,2,3334169,6937748,48.06,,CIK protocol: signatures / opening list plus both additions (rows 7 / (3+4+5)),https://results.cik.bg/mipvr2011/tur2/prezidentski/index.html
+2016,1,3943004,6860588,57.47,57.47,CIK presidential turnout: 20:00 row,https://results.cik.bg/pvrnr2016/tur1/aktivnost/index.html
+2016,2,3540829,6859390,51.62,51.62,CIK presidential turnout: 20:00 row,https://results.cik.bg/pvrnr2016/tur2/aktivnost/index.html
+2021,1,2687307,6635305,40.50,40.5,CIK presidential turnout: 20:00 row,https://results.cik.bg/pvrns2021/tur1/aktivnost/index.html
+2021,2,2310903,6632375,34.84,34.84,CIK presidential turnout: 20:00 row,https://results.cik.bg/pvrns2021/tur2/aktivnost/index.html
+2026,1,1525034,6637238,22.98,22.98,CIK presidential turnout: 20:00 row,https://results.cik.bg/pvr202610/tur1/aktivnost/index.html
+2026,2,1902933,6637274,28.67,28.67,CIK presidential turnout: 20:00 row,https://results.cik.bg/pvr202610/tur2/aktivnost/index.html

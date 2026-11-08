@@ -1,0 +1,158 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=26mm]{geometry}
+\usepackage{lmodern,amsmath,graphicx,booktabs,hyperref}
+\usepackage{placeins,float}
+\hypersetup{hidelinks}
+\title{Forecasting Turnout and Reconstructing Participation by Age: Evidence from Bulgaria's Presidential Runoff}
+\author{Stephan Krushev}
+\date{Working paper for review, 8 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+Bulgaria's presidential runoff drew 28.67\% turnout after a record-low 22.98\% in the first round. Could first-round voting hours still predict the close? After the count, what could the result tell us about who voted? Using agency observations through the 16:00 measurement, proportional scaling predicts 28.37\% and a stochastic voting-rate model gives a median of 27.65\%, against official closing turnout of 28.67\%. With official figures alone, the forecast on the documented record at 16:00 is 24.21\%. It rises to 27.85\% by the 17:03 report. Working backwards, we combine domestic vote totals with exit-poll choice shares by age. If every within-age choice share is accurate to one percentage point, voters aged 61 and over account for at least 59.3\% of domestic valid votes. A 50\% share first becomes feasible at a tolerance of about 2.030 points. The closing totals constrain the age mix, while different voting schedules by age can reproduce the same hourly turnout curve.
+\end{abstract}
+\noindent\textbf{Use of generative AI.} I used OpenAI's ChatGPT and Codex for model development, source research, analysis code, figures and manuscript preparation. The full declaration appears immediately before the references.
+
+\section{Introduction}
+Bulgaria held its first direct presidential election under the 1991 Constitution in January 1992. Some 5.21 million people voted in the runoff, or 75.90\% of the listed electorate. In November 2026 the corresponding figures were 1.90 million and 28.67\% (Figure~\ref{fig:history}). The decline was uneven. Participation recovered in 2011 and 2016. In 2026 both rounds drew fewer voters than their counterparts in any earlier direct election, yet the runoff brought 377,899 more people to the polls than the first round. Turnout rose from 22.98\% to 28.67\%, reversing the direction of the four preceding runoffs.
+
+\begin{figure}[H]\centering
+\includegraphics[width=.91\linewidth]{presidential_history.pdf}
+\caption{Participation in all eight direct Bulgarian presidential elections. The upper panel divides the recorded number voting by the corresponding listed electorate. The lower panel shows that count in millions, including participants who cast invalid ballots. The Presidency archives report voters for 1992--2001. CIK protocols supply signatures and electoral lists for 2006 and 2011, and CIK closing turnout tables supply the 2016--2026 counts. List definitions and reporting coverage vary across series. The accompanying \texttt{presidential\_history.csv} gives each primary source and retains the printed percentages. For the 1996 runoff the Presidency prints 61.67\%; its counts give 61.45\%.}\label{fig:history}
+\end{figure}
+
+Political trust was already weak before the 2026 election. In the OECD's 2025 Bulgarian survey, only 10\% of respondents reported high or moderately high trust in political parties and 16\% in the central government.\footnote{\href{https://www.oecd.org/en/publications/oecd-survey-on-drivers-of-trust-in-public-institutions-2026-results_c88c8869-en/bulgaria_31bcfcc8-en.html}{OECD Survey on Drivers of Trust in Public Institutions, Bulgaria country note}, 2026, Figures 1--3.} Five years before that survey, the philosopher Sergei Gherdjikov wrote about the hostility he observed during Bulgaria's 2020 protests. In an essay titled ``Leftist hatred is a destructive force,'' he attributed this hostility chiefly to communists and to ``anarcho-liberals of all generations'' (\hyperlink{ref-gherdjikov}{Gherdjikov, 2020}, translations from Bulgarian). His warning concerned what would follow at the ballot box: he expected the vote to fragment and the next parliament and prime minister to be weak, even if GERB won. Without agreement on the country's next steps, he feared that Bulgaria's development would slow. 
+
+The OECD also reports an age difference in trust in the national government: 20\% of young Bulgarian respondents expressed high or moderately high trust, compared with 17\% of those aged 50 and over. How could that pattern coexist with an older electorate at the polls? The age bounds below concern each group's share of domestic valid votes, which depends both on how many eligible people the group contains and on how many cast a valid vote. The survey and exit poll also use different age bands. One possibility is that mobilization affects participation across trust levels. Another is that the effect of mobilization varies with trust: a voter who distrusts the government may respond strongly to an appeal to replace it. Personal canvassing increased turnout in a randomized US field experiment (Gerber and Green, 2000). Distinguishing these mechanisms in Bulgaria would require observations linking pre-election trust, campaign contact and subsequent voting for the same individuals.
+
+An observer following the higher afternoon readings faced a practical question. Had the runoff attracted more voters, or had a greater fraction of its eventual voters already arrived? The first round offers a reference for timing even when participation changes. After the count we can also ask which age compositions are compatible with the result. Comparing possible arrival schedules then shows how far those compositions can explain the afternoon acceleration.
+
+\section{Data and limitations}
+We first forecast closing turnout from the previous round, then use the final domestic vote totals to bound the age composition of voters. The forecast target is the closing turnout percentage published by Bulgaria's Central Election Commission (CIK). Voters went to the polls on 25 October and 1 November. The first-round closing figure of 22.98\% was publicly reported by 28 October. The runoff closing table records 1,902,933 participants and an electorate of 6,637,274. CIK calculates closing turnout from precinct protocols after re-entry. The hourly series in the companion ledger combines Trend and Myara exit-poll estimates reported by Darik. Their exact sampling denominators and geographic coverage remain unresolved. Trend's parallel count supplies a second closing comparison of 27.5\%, reported at 21:04 on election day.\footnote{\href{https://results.cik.bg/pvr202610/tur1/aktivnost/index.html}{CIK, first round}; \href{https://results.cik.bg/pvr202610/tur2/aktivnost/index.html}{CIK, runoff}; \href{https://www.bnrnews.bg/izbori/post/549194/aktivnostta-na-parviya-tur-na-prezidentskite-izbori-e-2298percent}{BNR, first-round closing turnout}; \href{https://darik.bg/kakvo-pokazvat-dannite-na-trend-pri-100-paralelnoto-prebroavane~550181.html}{Trend parallel count as reported by Darik}.}
+\par The time attached to an observation describes when participation was measured. A forecast issued at a given hour can only use values already released. Darik's rolling runoff article gives an opening timestamp of 08:35 and an update at 19:12. The final article supports the reported values but does not timestamp each insertion. We therefore condition the hourly comparisons on observation time. We retain the archived 16.04\% first-round agency input and the separate official 15.95\%. Two agency values at 19:00 in the runoff are available for later checking. Neither enters the frozen models.\footnote{\href{https://dariknews.bg/novini/bylgariia/goliama-razlika-v-izbiratelnata-aktivnost-kakvo-pokazvat-dannite-kym-1900-chasa-2470058}{Darik first-round hourly report}; \href{https://dariknews.bg/novini/bylgariia/vizhte-izbiratelnata-aktivnost-na-balotazha-kym-1900-chasa-2470764}{Darik runoff hourly report}.}
+\begin{table}[!htbp]\centering\small
+\begin{tabular}{@{}p{.18\linewidth}p{.33\linewidth}p{.41\linewidth}@{}}\toprule
+Source & Quantity and denominator & Measurement and release evidence\\\midrule
+CIK turnout & Participants / listed electorate & 11:00 and 16:00 figures documented by 12:50 and 17:03. Final protocol totals at close.\\
+Trend and Myara via Darik & Hourly turnout estimates. Sampling denominators and geographic coverage unresolved. & Rolling runoff article updated at 19:12. Individual insertion times unknown.\\
+Trend parallel count & Alternative closing estimate of 27.5\%. Denominator comparability unresolved. & Closing estimate reported at 21:04.\\
+CIK results & Domestic valid votes for each choice, from national less overseas totals. & Final totals used after the count.\\
+Alpha Research & Choice shares within each of three age groups of exit-poll voters. & Published runoff profile used retrospectively. Whole percentages, without cell-level uncertainty here.\\\bottomrule
+\end{tabular}
+\caption{Evidence used in each analysis. Times are local. A documented release time establishes when a value was available at the latest.}
+\end{table}
+Alternating agencies across hours means a persistent difference between their estimates can appear as acceleration or deceleration. The forecast bands condition on the first-round curve and assume independent reporting errors. They omit uncertainty in that reference and systematic differences in coverage. The forecast targets CIK's 1,902,933 participants, while the age analysis allocates 1,792,997 domestic valid votes. Calculating the turnout rate of an age group would also require its eligible population and a count of all its participants.
+\section{Three forecasts of the same endpoint}
+Let $T_r(t)$ denote cumulative turnout in round $r$ at hour $t$, and $H=20$ the closing hour. The local forecast adds $(H-t)[T_2(t)-T_2(t-2)]/2$ to current turnout. Proportional scaling gives $T_2(t)T_1(H)/T_1(t)$. It transfers the fraction of the first round's final turnout already observed by that hour. Both use the same mixed hourly series in Table~\ref{tab:cut}.
+\par The stochastic model describes the instantaneous rate of voting among those who have yet to vote. On each one-hour interval the reference hazard $h_1$ equals the first-round increment in $-\log(1-T_1)$. Let $X_t=\log(h_t/h_1(t))$ be the runoff's log hazard ratio relative to round one. The baseline satisfies
+\[
+ dX_t=\frac{\theta-X_t}{\tau}\,dt+s\sqrt{2/\tau}\,dW_t,
+ \qquad dT_t=(1-T_t)h_1(t)e^{X_t}\,dt .
+\]
+The Ornstein--Uhlenbeck process $X_t$ reverts to an unknown level $\theta$. Conditional on $\theta$, the stationary variance of $X_t$ is $s^2$ and the stationary median hazard multiplier is $e^\theta$. We assume $\tau=2$ hours, $s=0.15$ and independent reporting error with standard deviation 0.5 percentage points. At 08:00 we set turnout to 0.8\%, draw $\theta\sim N(\log 1.2,0.25^2)$ and initialize $X_{08}\mid\theta\sim N(\theta,s^2)$. Each particle keeps its own $\theta$ fixed. New observations update the distribution of $\theta$ and the current rate through particle weighting and resampling. The implementation simulates the centered state $z_t=X_t-\theta$. We use 40,000 particles, three fixed seeds and five-minute steps. With $\tau=2$ hours, a rate deviation on the log scale retains 61\% of its expected amplitude after one hour and 37\% after two hours, a half-life of 83 minutes. The stationary SD $s=0.15$ gives one-SD hazard multipliers of 0.86 and 1.16 relative to $e^\theta$. Independent Gaussian reporting noise of 0.5 percentage points (pp) puts 90\% of single-report errors within $\pm0.82$ pp. These working scales allow deviations to persist across adjacent reports. One national round pair offers little leverage to distinguish a persistent rate shock from persistent measurement error.
+\par Bootstrap filtering follows Gordon, Salmond and Smith (1993). Empirical studies of voting hours provide reasons to examine temporal structure: Urbatsch (2017) uses variation in Kentucky polling hours to study age differences in turnout. Here the unit of observation is a national round, so the aggregate curve gives no direct evidence about individual arrival times. Gneiting and Raftery (2007) provide a framework for evaluating predictive distributions across future replications. We compare timing templates with a stochastic rate on the same hourly record. Section~\ref{sec:age} uses the final count to study a separate question about participation by age.
+\section{What changed through the afternoon?}
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{lrrrr}\toprule
+Latest hour & Recent slope & Scaling & Stochastic & 90\% report range\\\midrule
+\csname @@input\endcsname working_paper_table.tex 
+\bottomrule\end{tabular}
+\caption{Closing turnout forecasts (percent), grouped by observation hour. All use the same runoff inputs through that hour. The two closing benchmarks are CIK 28.67\% and Trend 27.5\%.}\label{tab:cut}
+\end{table}
+At noon and 14:00 the recent slope is closer to the official outcome than either reference-based forecast. By 16:00 the mixed proportional forecast is closest, missing by 0.30 percentage points. At 18:00 the local slope is closest again, missing by 0.47 points. Changing the evaluation target matters: against Trend at 16:00, the stochastic model misses by only 0.15 points, while scaling misses by 0.87. Each row shares one realized closing outcome, so these errors cannot be treated as independent trials.
+\par The stochastic median also forecasts the 18:00 agency reading from 16:00 at 23.81\%, compared with 24.00\% reported. Across the four historical two-hour checks, mean absolute errors are 0.86 points for the baseline stochastic model, 0.83 for recent slope and 1.08 for scaling. These horizons and outcomes differ from the closing comparisons. The filter supplies a conditional distribution at every step, but the point forecasts provide limited evidence of an improvement over a local extrapolation.
+
+\subsection*{Sensitivity of the frozen forecast}
+\begin{table}[!htbp]\centering\small
+\begin{tabular}{lrrrr}\toprule
+Assumption varied & Cutoff & Median & Latent 90\% & Report 90\%\\\midrule
+\csname @@input\endcsname ou_sensitivity_table.tex
+\bottomrule\end{tabular}
+\caption{Closing turnout (percent). Each row changes one baseline assumption, filters observations through the stated cutoff and simulates to close. Endpoints are 5th and 95th percentiles averaged across the three seeds.}\label{tab:sens}
+\end{table}
+Holding stationary variance fixed, extending persistence from one to four hours raises the 16:00 median by 0.58 pp. The size of rate shocks matters more for uncertainty: doubling $s$ widens the latent range from 4.02 to 7.45 pp. With the same observations, halving the assumed reporting SD from 0.50 to 0.25 pp gives the afternoon readings more weight. The median rises from 27.65\% to 28.77\%, just 0.10 pp above the official close. One endpoint cannot determine which error scale is appropriate. Centering the prior on equal hazards across rounds lowers the median by 0.46 pp at noon and 0.19 pp at 16:00. Later observations reduce the influence of the prior center. For future elections, authorities and polling agencies could archive each release with its measurement time, publication time, coverage and denominator. Such records would let researchers reconstruct the information available at each forecast and estimate reporting errors from repeated, comparable observations.
+
+\section{What could an observer have forecast at 16:00?}
+Applying scaling entirely to CIK data gives $19.33\times22.98/15.95=27.85\%$. The result is close, but its timestamp matters. BNR reported the 11:00 values for both rounds by 12:50. Its afternoon bulletin announced a 17:00 briefing for the next measurement. BNT published the 16:00 comparison at 17:03. Using the latest official values supported by these sources at 16:00 gives $6.11\times22.98/5.80=24.21\%$. Updating at the documented 17:03 report changes the forecast by 3.64 points. These timestamps establish availability by those times. An earlier original release would refine the chronology.\footnote{\href{https://bnrnews.bg/sofia/post/551376/611percent-aktivnost-otchete-tsik-kam-11-chasa}{BNR, 12:50}; \href{https://bnrnews.bg/main/post/551471/niska-aktivnost-i-na-balotazha-16-signala-za-narusheniya-v-tsik}{BNR, briefing schedule}; \href{https://bntnews.bg/news/cik-izbiratelnata-aktivnost-v-stranata-kam-1600-ch-e-1933-1420026news.html}{BNT, 17:03}.}
+\par The comparison separates two questions. Comparing the three columns at a common observation cutoff explores the choice of model. Comparing official-only scaling with mixed scaling changes source, reference values and update frequency together. Estimating the independent value of faster releases requires contemporaneous snapshots or a timestamped archive from each agency.
+\begin{figure}[!htbp]\centering
+\includegraphics[width=0.94\linewidth]{paper_forecast.pdf}
+\caption{Runoff forecast conditional on observations through the 16:00 measurement. Pointwise bands describe latent turnout and a future agency-like report under assumed noise scales. The official closing value serves as a comparison.}\end{figure}
+\section{Bounding the age composition of domestic valid votes}\label{sec:age}
+The final count fixes the number of domestic votes for each choice. Subtracting the overseas counts from the national category counts gives 1,049,439 for Yotova, 689,838 for Gyurov and 53,720 for neither, a total of 1,792,997. The exit poll supplies the reverse conditioning: among voters aged 18--30, the published split is 32/61/7 percent. The corresponding splits are 50/46/4 for ages 31--60 and 63/35/2 for ages 61 and over, in the same candidate order. Treating all nine percentages as exact forces a negative count for the middle group.\footnote{\href{https://results.cik.bg/pvr202610/tur2/rezultati/index.html}{CIK national results}, \href{https://results.cik.bg/pvr202610/tur2/rezultati/32.html}{CIK overseas results}, and \href{https://alpharesearch.bg/post/1060-01-noemvri-2026-demografski-profil-na-glasuvalite-na-ii-tur-na-izborite-za-prezident-i-viceprezident.html}{Alpha Research runoff demographic profile}. We use the sum of the candidate-category rows throughout.}
+
+How much of the age composition follows without selecting a preferred allocation? Let $n_{gc}\geq0$ be the number of domestic valid votes in age group $g$ for choice $c$, $v_g=\sum_c n_{gc}$, $b_c$ the observed category total, and $m_{gc}$ the published within-age choice share. For each age group we minimize and maximize $v_g$ and each $n_{gc}$ subject to
+\[
+ \sum_g n_{gc}=b_c,\qquad
+ (m_{gc}-\delta)v_g\le n_{gc}\le(m_{gc}+\delta)v_g .
+\]
+This follows the method of bounds of Duncan and Davis (1953). King (1997) combines bounds with statistical assumptions across aggregate observations. Here a single domestic count and externally reported choice shares define a feasible set through nine-cell linear programs. The endpoints are sharp for continuous counts under the stated constraints. Each endpoint has its own feasible allocation. Here $\delta$ is a sensitivity assumption about each within-age poll percentage. The historical shrinkage calculation in Figure~\ref{fig:historical-age} used a population reference to select one allocation.
+
+\begin{table}[!htbp]\centering
+\begin{tabular}{lrrr}\toprule
+Age & All three categories & Yotova & Gyurov\\\midrule
+18--30 & 0--309 & 0--102 & 0--185\\
+31--60 & 0--729 & 0--372 & 0--328\\
+61 and over & 1,064--1,592 & 678--987 & 362--567\\\bottomrule
+\end{tabular}
+
+\caption{Feasible ranges in thousands of domestic valid votes, rounded to the nearest thousand. Each range allows a one-percentage-point deviation in each within-age choice share.}\label{tab:age-bounds}
+\end{table}
+Table~\ref{tab:age-bounds} gives the feasible counts. The smallest feasible share of domestic valid votes cast by the oldest group is 59.3\% at one point of tolerance. At half a point it is 63.9\%; at two points it falls to 50.2\%. The two younger groups each have a zero marginal lower bound: these inputs alone cannot establish a positive minimum for either group separately. The tolerances describe scenarios rather than sampling coverage. A surveyed age group's actual electorate participation rate would additionally require its eligible population and its number of participants, including invalid ballots.
+
+
+
+We searched over $\delta$ by bisection, testing feasibility at each step. The first feasible allocation appears at approximately 0.275 pp. Rounding to the nearest whole percentage point permits deviations up to 0.5 pp, already enough to reconcile the entries. The negative middle-group solution at zero tolerance therefore provides no diagnostic of age-specific undersampling. Minimizing the oldest group's share at each tolerance shows that a share of one half first becomes attainable at approximately 2.030 pp. The published profile supplies no joint error guarantee for all nine entries.
+
+\subsection*{Can the afternoon acceleration be attributed to older voters?}
+Figure~\ref{fig:agepaths} fixes one illustrative closing age allocation and asks how early each group's eventual valid votes could have arrived. With common timing every group follows the dashed curve. In the alternative schedule the oldest group votes earlier and the youngest later. Weighting the coloured curves by their closing vote shares gives exactly the same dashed curve at every hour. Even exact closing age counts would leave the age of the additional afternoon voters unresolved.
+\begin{figure}[!htbp]\centering
+\includegraphics[width=.89\linewidth]{paper_schedules.pdf}
+\caption{Two constructed schedules yield exactly the same aggregate curve at every hour. In one, all ages follow the dashed line. In the other, older voters arrive earlier and younger voters later. Each curve shows the fraction of its group's eventual valid votes cast by that hour. An observer seeing only the aggregate could not distinguish the two schedules. Appendix~\ref{sup:timing} gives the construction and the illustrative closing allocation.}\label{fig:agepaths}
+\end{figure}
+\FloatBarrier
+\section{Conclusion}
+The first round supplies a baseline for the late-day slowdown. Proportional scaling came closest to official closing turnout with the 16:00 agency measurement, while the recent slope came closest at 18:00. The stochastic model adds a forecast distribution conditional on its rate and reporting assumptions. Comparing predictive performance across elections requires independent round pairs and timestamped releases.
+
+If each within-age exit-poll share is accurate to one percentage point, voters aged 61 and over cast at least 59.3\% of domestic valid votes. A 50\% share first becomes feasible at about 2.030 pp. This bounds the age composition at closing. It leaves open which age group supplied the additional votes between rounds or the acceleration within the runoff (Figure~\ref{fig:agepaths}).
+
+The OECD age comparison raises a question about that older electorate. Did voters with little trust in government respond especially strongly to an appeal for change? The same closing age mix could arise from the sizes of the eligible cohorts and differences in habitual voting, even if campaign contact had the same effect at every trust level. Distinguishing these explanations would require observing pre-election trust and campaign exposure alongside individual participation in both rounds.
+
+\appendix
+\section{When did the age groups vote?}\label{sup:timing}
+Suppose for a moment that the final age-by-choice table were known exactly. Write $N$ for its grand total, $n$ for one final cell count and $K(t)$ for the number of domestic valid-category votes cast by time $t$, measured on the same basis. Then the cell's cumulative count at that hour obeys
+\[
+ \max\{0,n-[N-K(t)]\}\;\le\; n(t)\;\le\;\min\{n,K(t)\}.
+\]
+The upper bound puts as many of the cell's voters as possible before $t$. The lower bound puts as many as possible after it. If compatible cumulative totals by candidate were available, the same argument could be applied within a candidate column, replacing $N$ and $K(t)$ by that candidate's final and cumulative totals. With uncertain final cells, their joint constraints must carry through the calculation.
+
+The closing count limits how many votes could still be cast after each hour. The order of their arrival remains uncertain. Estimating turnout by age and hour would require age-specific participation tallies. To estimate choices as well, we would seek exit-poll counts by age, choice and interview hour, with sampling weights and fieldwork coverage. The available aggregate reports allow us to compare possible schedules.
+\subsection*{Construction and historical closing allocation}
+Let $G(t)$ be measured aggregate turnout divided by CIK closing turnout, interpolated between the working observations through 18:00 and $G(20)=1$. In Figure~\ref{fig:agepaths}, group $g$'s weight $w_g$ is proportional to the historical allocation of 67, 702 and 1,131 thousand valid votes. This earlier reconstruction uses rounded counts and a population reference. The illustration assumes valid votes accumulate in aggregate at the same relative pace as measured participation. The alternative completion fractions are
+\[
+ F_g(t)=G(t)+a_gG(t)[1-G(t)],\qquad
+ a_g=0.6\Big(j_g-\sum_k w_kj_k\Big),\quad j_g=0,1,2.
+\]
+The factor 0.6 sets the illustrative timing difference. Since $\sum_g w_g a_g=0$, the aggregate is $G(t)$ for either schedule. With these weights $|a_g|\leq1$, so every curve increases and reaches one at closing.
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{generational_turnout_en.pdf}
+\caption{The historical age reconstruction illustrates how the denominator changes the interpretation of candidate support. Grey includes abstentions and invalid ballots under the earlier accounting assumptions.}\label{fig:historical-age}\end{figure}
+
+\FloatBarrier
+\small
+\section*{Replication}
+The companion archive \texttt{bg-turnout-replication.zip} contains the inputs, source ledger, analysis code and numerical results. From the extracted folder run \texttt{bash rebuild.sh} to regenerate the tables, figures and PDF.
+\section*{Declaration of Generative AI and AI-assisted technologies in the writing process}
+I used OpenAI's ChatGPT and Codex throughout this study to explore model formulations, locate and compare published election data, write and run analysis code, generate figures, and draft and revise the manuscript. I framed the research questions and directed the modeling choices, including how to distinguish the evidence for age-specific turnout from illustrative voting schedules. I reviewed the draft and directed revisions to the model, figures and interpretation. I take responsibility for the data, analysis, and conclusions presented here.
+\enlargethispage{1.4\baselineskip}
+\section*{References}
+\begingroup\setlength{\parindent}{0pt}
+Duncan, O. D. and B. Davis (1953). An alternative to ecological correlation. \href{https://doi.org/10.2307/2088122}{American Sociological Review}, 18, 665--666.\par
+Gerber, A. S. and D. P. Green (2000). \href{https://isps.yale.edu/resource/the-effects-of-canvassing-telephone-calls-and-direct-mail-on-voter-turnout-a-field}{The effects of canvassing, telephone calls, and direct mail on voter turnout: A field experiment}. American Political Science Review, 94, 653--663.\par
+\hypertarget{ref-gherdjikov}{Gherdjikov, Sergei} (2020, 22 August). \href{https://www.gherdjikov.com/levicharskata-omraza-e-razrushitelna-sila/}{\textit{Levicharskata omraza e razrushitelna sila} [Leftist hatred is a destructive force]}. Essay in Bulgarian, author's website.\par
+King, G. (1997). \href{https://gking.harvard.edu/ei}{A Solution to the Ecological Inference Problem}. Princeton University Press.\par
+Gordon, N., D. Salmond and A. Smith (1993). Novel approach to nonlinear/non-Gaussian Bayesian state estimation. \href{https://doi.org/10.1049/ip-f-2.1993.0015}{IEE Proceedings F}.\par
+Gneiting, T. and A. Raftery (2007). Strictly proper scoring rules, prediction, and estimation. \href{https://doi.org/10.1198/016214506000001437}{Journal of the American Statistical Association}.\par
+Urbatsch, R. (2017). Youthful hours: Shifting poll-opening times manipulates voter demographics. \href{https://doi.org/10.1177/2053168017720590}{Research \& Politics}.
+\par\endgroup
+\end{document}

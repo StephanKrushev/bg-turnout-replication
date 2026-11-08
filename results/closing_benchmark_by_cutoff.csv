@@ -1,0 +1,15 @@
+cutoff_hour,last_observation,model,documented_by,closing_forecast,error_vs_CIK_pp,error_vs_Trend_pp,reported_p05,reported_p95
+12,12,recent two-hour slope,,31.1,2.43,3.6,,
+12,12,mixed proportional,,23.99011,-4.67989,-3.50989,,
+12,12,stochastic q=0,,24.559487,-4.110513,-2.940513,21.507456,28.045973
+14,14,recent two-hour slope,,31.1,2.43,3.6,,
+14,14,mixed proportional,,25.552388,-3.117612,-1.947612,,
+14,14,stochastic q=0,,25.489444,-3.180556,-2.010556,23.145558,28.170775
+16,16,recent two-hour slope,,29.6,0.93,2.1,,
+16,16,mixed proportional,,28.366833,-0.303167,0.866833,,
+16,16,stochastic q=0,,27.65299,-1.01701,0.15299,25.610625,29.949262
+18,18,recent two-hour slope,,28.2,-0.47,0.7,,
+18,18,mixed proportional,,27.854545,-0.815455,0.354545,,
+18,18,stochastic q=0,,27.61207,-1.05793,0.11207,26.234896,29.086647
+11,11,official proportional,12:50,24.208241,-4.461759,-3.291759,,
+16,16,official proportional,17:03,27.849743,-0.820257,0.349743,,
